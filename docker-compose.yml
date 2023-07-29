@@ -1,0 +1,61 @@
+version: '3.8'
+
+name: myapp
+
+services:
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: 
+      - --config.file=/etc/loki/config.yaml
+    volumes:
+      # directory must be created first, with uid:gid 10001:10001
+      - ./volumes/loki:/loki
+      - ./loki/loki-config.yaml:/etc/loki/config.yaml
+
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/containers:/var/lib/docker/containers
+    networks:
+      - app
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    volumes:
+      # custom config will read logs from the containers of
+      # this project
+      - ./loki/promtail-config.yaml:/etc/promtail/config.yml
+      # to read container labels and logs
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/containers:/var/lib/docker/containers
+    networks:
+      - app
+
+  # will be available at http://127.0.0.1:3000
+  # default credentials: admin/admin
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      # directory must be created first, with uid:gid 472:472
+      - ./volumes/grafana:/var/lib/grafana
+      # automatically configure the loki datasource
+      - ./loki/grafana/provisioning/:/etc/grafana/provisioning/
+    networks:
+      - app
+
+  node-app:
+    build: .
+    container_name: node-app
+    ports:
+      - "5001:5001"
+    networks:
+      - app
+
+networks:
+  app:
+    name: app

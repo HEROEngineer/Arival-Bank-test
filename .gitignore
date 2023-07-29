@@ -7,6 +7,5 @@ npm-debug.log
 *.dev
 .DS_Store
 
-# Docker
-Dockerfile
-docker-compose.yml
+# loki and promtail volume
+volumes

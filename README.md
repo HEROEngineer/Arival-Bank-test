@@ -1,45 +1,78 @@
-# node-js-getting-started
+# Arival Bank Small Test Task
+This project is small task that is required before technical interview at Arival Bank.
 
-A barebones Node.js app using [Express 4](http://expressjs.com/).
-
-This application supports the [Getting Started on Heroku with Node.js](https://devcenter.heroku.com/articles/getting-started-with-nodejs) article - check it out.
-
-## Running Locally
-
-Make sure you have [Node.js](http://nodejs.org/) and the [Heroku CLI](https://cli.heroku.com/) installed.
-
-```sh
-$ git clone https://github.com/heroku/node-js-getting-started.git # or clone your own fork
-$ cd node-js-getting-started
-$ npm install
-$ npm start
-```
-
-Your app should now be running on [localhost:5000](http://localhost:5000/).
-
-## Deploying to Heroku
-
-Using resources for this example app counts towards your usage. [Delete your app](https://devcenter.heroku.com/articles/heroku-cli-commands#heroku-apps-destroy) and [database](https://devcenter.heroku.com/articles/heroku-postgresql#removing-the-add-on) as soon as you are done experimenting to control costs.
-
-By default, apps use Eco dynos if you are subscribed to Eco. Otherwise, it defaults to Basic dynos. The Eco dynos plan is shared across all Eco dynos in your account and is recommended if you plan on deploying many small apps to Heroku. Learn more about our low-cost plans [here](https://blog.heroku.com/new-low-cost-plans).
-
-Eligible students can apply for platform credits through our new [Heroku for GitHub Students program](https://blog.heroku.com/github-student-developer-program).
+## Clone git repository
+To clone git repository, run this command.
 
 ```
-$ heroku create
-$ git push heroku main
-$ heroku open
+$ git clone https://github.com/HEROEngineer/Arival-Bank-test.git
+$ cd Arival-Bank-test
 ```
-or
 
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+## 1: Running NodeJS Docker
 
-## Documentation
+To run [Node.js](http://nodejs.org/) docker image, use following command. Make sure you have installed [Docker](https://docs.docker.com/engine/install/ubuntu/).
 
-For more information about using Node.js on Heroku, see these Dev Center articles:
+```
+$ docker build .
+```
 
-- [Getting Started on Heroku with Node.js](https://devcenter.heroku.com/articles/getting-started-with-nodejs)
-- [Heroku Node.js Support](https://devcenter.heroku.com/articles/nodejs-support)
-- [Node.js on Heroku](https://devcenter.heroku.com/categories/nodejs)
-- [Best Practices for Node.js Development](https://devcenter.heroku.com/articles/node-best-practices)
-- [Using WebSockets on Heroku with Node.js](https://devcenter.heroku.com/articles/node-websockets)
+After running this command, docker image for this nodejs application is generated, but there is no name. If you want to set docker image name and tag, use -t flag.
+
+```
+$ docker build -t <docker-image-name>:<tag>
+```
+
+For example 
+
+```
+$ docker build -t myapp-node-app:latest
+```
+
+After running this command, first you find nodejs docker image and run this image.
+
+```
+$ docker images
+$ docker run -d <nodejs-docker-image-id>
+```
+
+And you can access nodejs application by using this url: http://localhost:5001
+
+## 2: Running Loki, Promtail, Grafana and Nodejs application with docker-compose
+
+Make sure you have installed [docker-compose](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04).
+
+First, you need to create volume for data storage.
+```
+$ mkdir -p ./volumes/loki
+$ sudo chown 10001:10001 ./volumes/loki
+
+$ mkdir -p ./volumes/grafana
+$ sudo chown 472:472 ./volumes/grafana
+```
+
+After that, you can run Loki, Promtail, Grafana and nodejs application by using this command.
+
+```
+$ docker-compose up -d
+```
+
+After a few seconds, all containers will be up and running, and the grafana web interface will be available at http://localhost:3000 with default credentials.
+
+- Username: admin
+- Password: admin
+
+To check that data is flowing correctly:
+
+1: Click on the "Explorer" button on the left.
+2: Set Label filters (in that case, job = nodejs).
+3: And click on the "Run query" button and you can see the result.
+
+## 3: Write simple script that will print numbers from 0 to 100 and convert every tenth to a wordy version
+
+In that case, I use [Python3](https://www.python.org/) Programming language. Make sure that you have installed [Python3](https://www.python.org/). To view result, run following commands.
+
+```
+$ cd Test-3
+$ python3 test.py
+```
